@@ -1,7 +1,7 @@
 import { interfaces } from "../interfaces/interfaces";
 import { BindingScopeEnum, BindingTypeEnum } from "../constants/literal_types";
 import { getServiceIdentifierAsString } from "../utils/serialization";
-import { resolveInstance } from "./instantiation";
+import { resolveInstance, resolveStaticFactory } from "./instantiation";
 import * as ERROR_MSGS from "../constants/error_msgs";
 
 function _resolveRequest(request: interfaces.Request): any {
@@ -48,6 +48,8 @@ function _resolveRequest(request: interfaces.Request): any {
             result = binding.dynamicValue(request.parentContext);
         } else if (binding.type === BindingTypeEnum.Factory && binding.factory !== null) {
             result = binding.factory(request.parentContext);
+        } else if (binding.type === BindingTypeEnum.StaticFactory && binding.staticFactory !== null) {
+            result = resolveStaticFactory(binding.staticFactory, childRequests, _resolveRequest);
         } else if (binding.type === BindingTypeEnum.Provider && binding.provider !== null) {
             result = binding.provider(request.parentContext);
         } else if (binding.type === BindingTypeEnum.Instance && binding.implementationType !== null) {

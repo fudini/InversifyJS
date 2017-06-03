@@ -54,6 +54,12 @@ class BindingToSyntax<T> implements interfaces.BindingToSyntax<T> {
         return new BindingWhenOnSyntax<T>(this._binding);
     }
 
+    public toStaticFactory<T2>(factory: interfaces.StaticFactory<T2>): interfaces.BindingWhenOnSyntax<T> {
+        this._binding.type = BindingTypeEnum.StaticFactory;
+        this._binding.staticFactory = factory;
+        return new BindingWhenOnSyntax<T>(this._binding);
+    }
+
     public toFunction(func: T): interfaces.BindingWhenOnSyntax<T> {
         // toFunction is an alias of toConstantValue
         if (typeof func !== "function") { throw new Error(ERROR_MSGS.INVALID_FUNCTION_BINDING); }

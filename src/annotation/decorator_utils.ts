@@ -33,11 +33,6 @@ function _tagParameterOrProperty(
     let isParameterDecorator = (typeof parameterIndex === "number");
     let key: string = (parameterIndex !== undefined && isParameterDecorator) ? parameterIndex.toString() : propertyName;
 
-    // if the decorator is used as a parameter decorator, the property name must be provided
-    if (isParameterDecorator === true && propertyName !== undefined) {
-        throw new Error(ERROR_MSGS.INVALID_DECORATOR_OPERATION);
-    }
-
     // read metadata if avalible
     if (Reflect.hasOwnMetadata(metadataKey, annotationTarget) === true) {
         paramsOrPropertiesMetadata = Reflect.getMetadata(metadataKey, annotationTarget);

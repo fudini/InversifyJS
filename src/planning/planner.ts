@@ -164,6 +164,16 @@ function _createSubRequests(
                 subChildRequest = childRequest;
             }
 
+            if (binding.type === BindingTypeEnum.StaticFactory && binding.staticFactory !== null) {
+
+                let dependencies = getDependencies(metadataReader, binding.staticFactory);
+
+                dependencies.forEach((dependency: interfaces.Target) => {
+                    _createSubRequests(metadataReader, false, dependency.serviceIdentifier, context, subChildRequest, dependency);
+                });
+
+            }
+
             if (binding.type === BindingTypeEnum.Instance && binding.implementationType !== null) {
 
                 let dependencies = getDependencies(metadataReader, binding.implementationType);

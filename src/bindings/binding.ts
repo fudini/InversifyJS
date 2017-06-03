@@ -33,6 +33,9 @@ class Binding<T> implements interfaces.Binding<T> {
     // A factory method used in BindingType.Factory bindings
     public factory: interfaces.FactoryCreator<T> | null;
 
+    // A static factory method in BindingType.StaticFactory bindings
+    public staticFactory: interfaces.StaticFactory<T> | null;
+
     // An async factory method used in BindingType.Provider bindings
     public provider: interfaces.ProviderCreator<T> | null;
 
@@ -52,6 +55,7 @@ class Binding<T> implements interfaces.Binding<T> {
         this.implementationType = null;
         this.cache = null;
         this.factory = null;
+        this.staticFactory = null;
         this.provider = null;
         this.onActivation = null;
         this.dynamicValue = null;
@@ -65,6 +69,7 @@ class Binding<T> implements interfaces.Binding<T> {
         clone.scope = this.scope;
         clone.type = this.type;
         clone.factory = this.factory;
+        clone.staticFactory = this.staticFactory;
         clone.provider = this.provider;
         clone.constraint = this.constraint;
         clone.onActivation = this.onActivation;

@@ -30,32 +30,53 @@ function _createInstance(Func: interfaces.Newable<any>, injections: Object[]): a
     return new Func(...injections);
 }
 
+function getInjections(
+    childRequests: interfaces.Request[],
+    resolveRequest: (request: interfaces.Request) => any
+): any[] {
+
+    let injectionsRequests = childRequests.filter((childRequest: interfaces.Request) => {
+        return (childRequest.target !== null && childRequest.target.type === TargetTypeEnum.ConstructorArgument);
+    });
+
+    return injectionsRequests.map((childRequest: interfaces.Request) => {
+        return resolveRequest(childRequest);
+    });
+
+}
+
 function resolveInstance(
     constr: interfaces.Newable<any>,
     childRequests: interfaces.Request[],
     resolveRequest: (request: interfaces.Request) => any
 ): any {
 
-    let result: any = null;
-
-    if (childRequests.length > 0) {
-
-        let constructorInjectionsRequests = childRequests.filter((childRequest: interfaces.Request) => {
-            return (childRequest.target !== null && childRequest.target.type === TargetTypeEnum.ConstructorArgument);
-        });
-
-        let constructorInjections = constructorInjectionsRequests.map((childRequest: interfaces.Request) => {
-            return resolveRequest(childRequest);
-        });
-
-        result = _createInstance(constr, constructorInjections);
-        result = _injectProperties(result, childRequests, resolveRequest);
-
-    } else {
-        result = new constr();
+    if (childRequests.length === 0) {
+        return new constr();
     }
+
+    let injections = getInjections(childRequests, resolveRequest);
+    let result: any = _createInstance(constr, injections);
+    result = _injectProperties(result, childRequests, resolveRequest);
 
     return result;
 }
 
-export { resolveInstance };
+function resolveStaticFactory(
+    staticFactory: interfaces.StaticFactory<any>,
+    childRequests: interfaces.Request[],
+    resolveRequest: (request: interfaces.Request) => any
+): any {
+
+    if (childRequests.length === 0) {
+        return staticFactory.create();
+    }
+
+    let injections = getInjections(childRequests, resolveRequest);
+    let result: any = staticFactory.create(...injections);
+
+    return result;
+}
+
+
+export { resolveInstance, resolveStaticFactory };

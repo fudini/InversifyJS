@@ -13,7 +13,8 @@ let BindingTypeEnum: interfaces.BindingTypeEnum = {
     Function: "Function",
     Instance: "Instance",
     Invalid: "Invalid",
-    Provider: "Provider"
+    Provider: "Provider",
+    StaticFactory: "StaticFactory"
 };
 
 let TargetTypeEnum: interfaces.TargetTypeEnum = {

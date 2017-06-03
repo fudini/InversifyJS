@@ -3,7 +3,7 @@ namespace interfaces {
     export type BindingScope = "Singleton" | "Transient";
 
     export type BindingType = "ConstantValue" | "Constructor" | "DynamicValue" | "Factory" |
-                              "Function" | "Instance" | "Invalid" | "Provider";
+                              "Function" | "Instance" | "Invalid" | "Provider" | "StaticFactory";
 
     export type TargetType = "ConstructorArgument" | "ClassProperty" | "Variable";
 
@@ -21,6 +21,7 @@ namespace interfaces {
         Instance: interfaces.BindingType;
         Invalid: interfaces.BindingType;
         Provider: interfaces.BindingType;
+        StaticFactory: interfaces.BindingType;
     }
 
     export interface TargetTypeEnum {
@@ -54,6 +55,7 @@ namespace interfaces {
         type: BindingType;
         implementationType: Newable<T> | null;
         factory: FactoryCreator<any> | null;
+        staticFactory: StaticFactory<any> | null;
         provider: ProviderCreator<any> | null;
         onActivation: ((context: interfaces.Context, injectable: T) => T) | null;
         cache: T | null;
@@ -65,6 +67,10 @@ namespace interfaces {
 
     export interface FactoryCreator<T> extends Function {
         (context: Context): Factory<T>;
+    }
+
+    export interface StaticFactory<T> extends Function {
+        create: (...args: any[]) => T;
     }
 
     export interface Provider<T> extends Function {
@@ -272,6 +278,7 @@ namespace interfaces {
         toDynamicValue(func: (context: Context) => T): BindingInWhenOnSyntax<T>;
         toConstructor<T2>(constructor: Newable<T2>): BindingWhenOnSyntax<T>;
         toFactory<T2>(factory: FactoryCreator<T2>): BindingWhenOnSyntax<T>;
+        toStaticFactory<T2>(factory: StaticFactory<T2>): BindingWhenOnSyntax<T>;
         toFunction(func: T): BindingWhenOnSyntax<T>;
         toAutoFactory<T2>(serviceIdentifier: ServiceIdentifier<T2>): BindingWhenOnSyntax<T>;
         toProvider<T2>(provider: ProviderCreator<T2>): BindingWhenOnSyntax<T>;
